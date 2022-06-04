@@ -1,0 +1,27 @@
+{{define "content"}}
+<div class="container marketing">
+    <h3 class="text-center mb-4">DNS Advanced Entries</h3>
+    <table class="table table-striped text-center">
+        <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>Type</th>
+            <th>TTL</th>
+            <th>Value</th>
+            <th><button class="addAdvanced btn btn-primary">Add Advanced Entry</button></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .advanced}}
+        <tr>
+            <td>{{.Hostname}}.{{.Target.Domain}}</td>
+            <td>{{.Type}}</td>
+            <td>{{.Ttl}}</td>
+            <td>{{.Value}}</td>
+            <td><button id="{{.ID}}" class="deleteAdvanced btn btn-outline-secondary btn-sm"><img src="/static/icons/trash.svg" alt="" width="16" height="16" title="Delete"></button></td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
