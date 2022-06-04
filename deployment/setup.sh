@@ -5,6 +5,18 @@
 [ -z "$DDNS_PARENT_NS" ] && echo "DDNS_PARENT_NS not set" && exit 1;
 [ -z "$DDNS_DEFAULT_TTL" ] && echo "DDNS_DEFAULT_TTL not set" && exit 1;
 
+if [ -z "$DDNS_SLAVE_SERVER" ]
+then
+	SLAVE_SERVER="none;";
+else
+	for d in ${DDNS_SLAVE_SERVER//,/ }
+	do
+		SLAVE_SERVER="$SLAVE_SERVER$d;";
+	done
+	EXTRA_OPTIONS="also-notify { $SLAVE_SERVER };";
+fi
+echo $SLAVE_SERVER;
+
 DDNS_IP=$(curl icanhazip.com)
 
 for d in ${DDNS_DOMAINS//,/ }
@@ -17,8 +29,9 @@ zone "$d" {
 	type master;
 	file "$d.zone";
 	allow-query { any; };
-	allow-transfer { none; };
+	allow-transfer { ${SLAVE_SERVER} };
 	allow-update { localhost; };
+	${EXTRA_OPTIONS}
 };
 EOF
 	fi
